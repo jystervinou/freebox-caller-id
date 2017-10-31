@@ -11,7 +11,7 @@ Vous devez récupérer votre [identifiant et la clé d'identification](http://ww
 ### Installation
 
 ```
-npm install freebox-caller-id
+git clone https://github.com/jystervinou/freebox-caller-id.git
 
 cd freebox-caller-id
 

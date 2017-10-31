@@ -1,6 +1,6 @@
 {
   "name": "freebox-caller-id",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Notification quand le téléphone fixe de la Freebox Révolution sonne",
   "main": "caller_id.js",
   "dependencies": {
