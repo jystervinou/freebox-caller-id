@@ -11,6 +11,8 @@ var logDir = '/tmp/callerid/';
 var smsAPI = 'https://smsapi.free-mobile.fr/sendmsg?';
 var user = require('./config.json');
 
+const DELAY = 1000;
+
 script.command('init').description("Requests authorization").action( ()=> {
   var config=fillConfig();
   var freebox=new Freebox(config);
@@ -35,8 +37,14 @@ script.command('init').description("Requests authorization").action( ()=> {
 });
 
 script.command('calls').description("Return calls").action( ()=> {
-  getCalls(function(calls) {
-    console.log("calls=",calls[0]);
+  getCalls(function(error, calls) {
+    console.log("calls=",calls);
+  });
+});
+
+script.command('lastcall').description("Return last call").action( ()=> {
+  getCalls(function(error, calls) {
+    console.log("lastcall=",calls[0]);
   });
 });
 
@@ -47,29 +55,35 @@ if (!script.args.length) run();
 
 function run() {
   getCalls(function(error, calls) {
-    if (error) return setTimeout(run, 1000);
+    if (error) return setTimeout(run, DELAY);
 
-    if (calls.length == 0) return setTimeout(run, 1000);
+    if (calls.length == 0) return setTimeout(run, DELAY);
 
+    // Get last call
     var call = calls[0];
 
+    // Is the call currently ringing?
     if (call.type == 'missed' && call.duration == 0) {
-      console.log("calls=",calls[0]);
+      console.log("calls=",call);
 
-      // check if we already notified
+      // Check if we already notified
       if (checkNotified(call)) {
-        return setTimeout(run, 1000);
+        return setTimeout(run, DELAY);
       }
 
+      // We don't want to send the same SMS every seconds...
       storeNotified(call);
 
       request({uri: smsAPI + 'user=' + user.login + '&pass=' + user.pass + '&msg=' + call.number}, function(error, response, body) {
         if (error) {
           console.log(error);
         }
+
+        return setTimeout(run, DELAY);
       });
+    } else {
+      return setTimeout(run, DELAY);
     }
-    return setTimeout(run, 1000);
   });
 }
 
