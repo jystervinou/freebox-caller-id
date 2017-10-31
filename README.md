@@ -6,10 +6,11 @@ Quand le téléphone fixe de la Freebox (Révolution ou Mini 4K) sonne, ce scrip
 
 * Une Freebox Révolution ou une Freebox Mini 4K (le script utilise Freebox OS)
 * Une ligne Free Mobile (pour recevoir les notifications par SMS)
-
-Vous devez lancer le script 24/24 sur un serveur qui se trouve sur le réseau local du Freebox Server.
+* Un serveur avec Node.js sur le réseau local de la Freebox (par exemple un Raspberry Pi)
 
 Vous devez récupérer votre [identifiant et la clé d'identification](http://www.universfreebox.com/article/26337/Nouveau-Free-Mobile-lance-un-systeme-de-notification-SMS-pour-vos-appareils-connectes) de l'API de notification SMS sur votre compte Free Mobile.
+
+Vous devez lancer le script 24h/24 sur un serveur qui se trouve sur le réseau local du Freebox Server.
 
 ### Installation
 
