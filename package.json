@@ -10,9 +10,9 @@
   },
   "devDependencies": {},
   "repository": {
-        "type": "git",
-            "url": "https://github.com/jystervinou/freebox-caller-id.git"
-                },
+    "type": "git",
+    "url": "https://github.com/jystervinou/freebox-caller-id.git"
+  },
   "keywords": [
     "freebox",
     "freeboxOS"

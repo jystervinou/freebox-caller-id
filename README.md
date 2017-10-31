@@ -12,6 +12,10 @@ Vous devez récupérer votre [identifiant et la clé d'identification](http://ww
 
 ```
 npm install freebox-caller-id
+
+cd freebox-caller-id
+
+npm install
 ```
 
 ## Fonctionnement
