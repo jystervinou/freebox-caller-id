@@ -1,8 +1,11 @@
 # Freebox Caller ID
 
-Quand le téléphone fixe de la Freebox Révolution sonne, ce script envoie une notification par SMS (Free Mobile) avec le numéro de l'appelant
+Quand le téléphone fixe de la Freebox (Révolution ou Mini 4K) sonne, ce script envoie une notification par SMS (Free Mobile) avec le numéro de l'appelant
 
 ### Prérequis
+
+* Une Freebox Révolution ou une Freebox Mini 4K (le script utilise Freebox OS)
+* Une ligne Free Mobile (pour recevoir les notifications par SMS)
 
 Vous devez lancer le script 24/24 sur un serveur qui se trouve sur le réseau local du Freebox Server.
 
