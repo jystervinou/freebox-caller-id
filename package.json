@@ -1,0 +1,23 @@
+{
+  "name": "freebox-caller-id",
+  "version": "0.0.2",
+  "description": "Notification quand le téléphone fixe de la Freebox Révolution sonne",
+  "main": "caller_id.js",
+  "dependencies": {
+    "node-freeboxos": "jystervinou/node-freeboxos",
+    "commander": "^2.11.0",
+    "request": "^2.75.0"
+  },
+  "devDependencies": {},
+  "repository": {
+        "type": "git",
+            "url": "https://github.com/jystervinou/freebox-caller-id.git"
+                },
+  "keywords": [
+    "freebox",
+    "freeboxOS"
+  ],
+  "author": "Jean-Yves Stervinou (http://www.stervinou.com/)",
+  "readmeFilename": "README.md",
+  "license": "GPL"
+}
