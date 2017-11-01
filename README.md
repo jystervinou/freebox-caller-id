@@ -1,6 +1,12 @@
 # Freebox Caller ID
 
-Quand le téléphone fixe de la Freebox (Révolution ou Mini 4K) sonne, ce script envoie une notification par SMS (Free Mobile) avec le numéro de l'appelant
+Vous en avez assez d'aller voir qui appelle sur votre téléphone Freebox *fixe*, quand la plupart du temps il s'agit d'un appel indésirable ou d'un numéro caché ?
+
+Ce script est fait pour vous !
+
+Quand le téléphone fixe de la Freebox (Révolution ou Mini 4K) sonne, ce script envoie une notification par SMS sur votre mobile (Free Mobile) avec le numéro de l'appelant.
+
+Vous pouvez alors décider de vous lever pour aller répondre ou pas.
 
 ### Prérequis
 
