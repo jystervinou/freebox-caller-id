@@ -30,7 +30,7 @@ npm install
 
 ## Fonctionnement
 
-1- Ouvrez le fichier config.json pour renseigner vos identifiants Free Mobile pour l'API de notification par SMS. 
+1- Ouvrez le fichier config/default.json pour renseigner vos identifiants Free Mobile pour l'API de notification par SMS.
 
 2- Initialiser le script pour s'authentifier auprès de la Freebox. Une demande d'autorisation va s'afficher sur l'écran LCD de Freebox Server. Répondez oui avec la flèche droite.
 
@@ -42,6 +42,36 @@ node caller_id.js init
 
 ```
 node caller_id.js
+```
+
+## Options
+
+1- Vous pouvez renseigner plusieurs numéros Free Mobile destinataires des notifications. Il suffit de rajouter un nouvel élément dans l'Array 'freemobile' dans config/default.json.
+
+```
+{
+  "freemobile" : [{
+      "login" : "12345678",
+      "pass" : "xxxxxxxxxxxxxx"
+    },
+    {
+      "login" : "87654321",
+      "pass" : "yyyyyyyyyyyyyy"
+    }
+  ]
+}
+```
+
+2- Vous pouvez customiser le template des SMS, en rajoutant un champ 'template':
+
+```
+{
+  "freemobile" : [{
+    "login" : "12345678",
+    "pass" : "xxxxxxxxxxxxxx",
+    "template" : "{{=call.number}}"
+  }]
+}
 ```
 
 ## Auteurs
