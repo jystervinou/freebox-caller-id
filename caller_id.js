@@ -6,7 +6,7 @@ var path = require('path');
 var request = require('request');
 var doT = require('dot');
 
-script.version('0.0.11');
+script.version('0.5.0');
 
 doT.templateSettings.varname = 'call';
 
@@ -14,7 +14,7 @@ var infos = './freebox.json';
 var smsAPI = 'https://smsapi.free-mobile.fr/sendmsg?';
 
 const DELAY = 1000;
-const DEFAULT_TEMPLATE = "Appel: {{? call.number==''}}Anonyme{{??}}{{=call.number}} ({{=call.name}}){{?}}";
+const DEFAULT_TEMPLATE = "Appel Freebox : {{? call.number==''}}Anonyme{{??}}{{=call.number}} ({{=call.name}}){{?}}";
 
 var lastCallID = 0;
 
