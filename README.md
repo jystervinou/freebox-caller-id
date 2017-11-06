@@ -30,7 +30,7 @@ npm install
 
 ## Fonctionnement
 
-1- Ouvrez le fichier config/default.json pour renseigner vos identifiants Free Mobile pour l'API de notification par SMS.
+1- Créer un fichier config/local.json en prenant pour modèle le fichier config/default.json (Renseigner vos identifiants Free Mobile pour l'API de notification par SMS).
 
 2- Initialiser le script pour s'authentifier auprès de la Freebox. Une demande d'autorisation va s'afficher sur l'écran LCD de Freebox Server. Répondez oui avec la flèche droite.
 
