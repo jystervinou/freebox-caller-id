@@ -1,21 +1,26 @@
 var Freebox = require('node-freeboxos');
 var script = require('commander');
+var config = require('config');
 var fs = require('fs');
 var path = require('path');
 var request = require('request');
+var doT = require('dot');
 
-script.version('0.0.1');
+script.version('0.0.11');
 
-var infos = '/tmp/callerid/freebox.json';
-var logDir = '/tmp/callerid/';
+doT.templateSettings.varname = 'call';
+
+var infos = './freebox.json';
 var smsAPI = 'https://smsapi.free-mobile.fr/sendmsg?';
-var user = require('./config.json');
 
 const DELAY = 1000;
+const DEFAULT_TEMPLATE = "Appel: {{? call.number==''}}Anonyme{{??}}{{=call.number}} ({{=call.name}}){{?}}";
+
+var lastCallID = 0;
 
 script.command('init').description("Requests authorization").action( ()=> {
-  var config=fillConfig();
-  var freebox=new Freebox(config);
+  var freeboxConf=fillConfig();
+  var freebox=new Freebox(freeboxConf);
 
   freebox.waitApplicationGranted(1000*60*2, (error, app) => {
     console.error("error=",error,"app=",app);
@@ -24,8 +29,6 @@ script.command('init').description("Requests authorization").action( ()=> {
       console.error(error);
       return;
     }
-
-    ensureDirectoryExistence(infos);
 
     freebox.saveJSON(infos, (error) => {
       if (error) {
@@ -66,19 +69,19 @@ function run() {
     if (call.type == 'missed' && call.duration == 0) {
       console.log("calls=",call);
 
-      // Check if we already notified
-      if (checkNotified(call)) {
+      // If we already notified for this call...
+      if (lastCallID == call.id) {
+        console.log('Already sent');
         return setTimeout(run, DELAY);
       }
 
       // We don't want to send the same SMS every seconds...
-      storeNotified(call);
+      lastCallID = call.id;
 
-      request({uri: smsAPI + 'user=' + user.login + '&pass=' + user.pass + '&msg=' + call.number}, function(error, response, body) {
+      sendNotifications(call, function(error) {
         if (error) {
-          console.log(error);
+          console.log(error); // Just log..
         }
-
         return setTimeout(run, DELAY);
       });
     } else {
@@ -87,13 +90,83 @@ function run() {
   });
 }
 
+function sendNotifications(call, callback) {
+  console.log('Sending notifications...');
+  return sendAllSMS(call, callback);
+}
+
+function sendAllSMS(call, callback) {
+  var remaining = 0;
+  var errors = null;
+
+  // Check if config OK
+  if (config.has('freemobile')) {
+    var mobile;
+    remaining = config.get('freemobile').length;
+    console.log('Sending ' + remaining + ' SMS...');
+    for (var i=0; i< config.get('freemobile').length; i++) {
+      mobile = config.get('freemobile')[i];
+      sendSMS(call, mobile, done);
+    }
+  }
+
+  function sendSMS(call, mobile, callback) {
+    var template = '';
+
+    if (mobile.hasOwnProperty('template')) {
+      template = mobile['template'];
+    } else {
+      template = DEFAULT_TEMPLATE;
+    }
+
+    var templateFn = doT.template(template);
+
+    if (!(mobile.hasOwnProperty('login') && mobile.hasOwnProperty('pass') )) return setTimeout(run, DELAY);
+
+    var data = {
+      number: call.number,
+      type: call.type,
+      id: call.id,
+      duration: call.duration,
+      datetime: call.datetime,
+      'contact_id': call.contact_id,
+      'line_id': call.line_id,
+      name: call.name,
+      new: call.new
+    };
+
+    request({uri: smsAPI + 'user=' + mobile['login'] + '&pass=' + mobile['pass'] + '&msg=' + templateFn(data)}, function(error, response, body) {
+      if (error) {
+        callback(error);
+      }
+
+      callback(null);
+    });
+  }
+
+  function done(error) {
+    if (error) {
+      errors += error;
+      console.log('error: ' + error);
+    } else {
+      console.log('SMS sent');
+    }
+    remaining--;
+    if (remaining == 0) {
+      // We're done sending all SMS
+      console.log('All SMS sent');
+      return callback(errors);
+    }
+  }
+}
+
 function getCalls(callback) {
-  var config=fillConfig();
+  var freeboxConf=fillConfig();
 
-  config.jsonPath = infos;
-  config.jsonAutoSave = true;
+  freeboxConf.jsonPath = infos;
+  freeboxConf.jsonAutoSave = true;
 
-  var freebox = new Freebox(config);
+  var freebox = new Freebox(freeboxConf);
 
   freebox.calls((error, calls) => {
     if (error) {
@@ -105,26 +178,6 @@ function getCalls(callback) {
   });
 }
 
-function checkNotified(call, callback) {
-  var callLog = logDir+call.id;
-  return fs.existsSync(callLog);
-}
-
-function storeNotified(call) {
-  var callLog = logDir+call.id;
-  ensureDirectoryExistence(callLog);
-  fs.writeFileSync(callLog, JSON.stringify(call, null, '\t'));
-}
-
-function ensureDirectoryExistence(filePath) {
-  var dirname = path.dirname(filePath);
-  if (fs.existsSync(dirname)) {
-    return true;
-  }
-  ensureDirectoryExistence(dirname);
-  fs.mkdirSync(dirname);
-}
-
 function fillConfig() {
   // Will be shown on the Freebox LCD screen
   var app = {
@@ -134,8 +187,8 @@ function fillConfig() {
     device_name  : "Server"
   };
 
-  var config = {app};
+  var freeboxConf = {app};
 
-  return config;
+  return freeboxConf;
 }
 
