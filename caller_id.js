@@ -129,8 +129,8 @@ function sendAllSMS(call, callback) {
       id: call.id,
       duration: call.duration,
       datetime: call.datetime,
-      'contact_id': call.contact_id,
-      'line_id': call.line_id,
+      contact_id: call.contact_id,
+      line_id: call.line_id,
       name: call.name,
       new: call.new
     };
