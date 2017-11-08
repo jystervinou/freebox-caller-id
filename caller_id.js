@@ -1,12 +1,10 @@
 var Freebox = require('node-freeboxos');
 var script = require('commander');
 var config = require('config');
-var fs = require('fs');
-var path = require('path');
 var request = require('request');
 var doT = require('dot');
 
-script.version('0.5.0');
+script.version('0.5.1');
 
 doT.templateSettings.varname = 'call';
 
@@ -41,13 +39,15 @@ script.command('init').description("Requests authorization").action( ()=> {
 
 script.command('calls').description("Return calls").action( ()=> {
   getCalls(function(error, calls) {
-    console.log("calls=",calls);
+    if (error) return console.error("error=",error);
+    console.log(calls);
   });
 });
 
 script.command('lastcall').description("Return last call").action( ()=> {
   getCalls(function(error, calls) {
-    console.log("lastcall=",calls[0]);
+    if (calls.length == 0) return console.log("No call");
+    console.log(calls[0]);
   });
 });
 
@@ -67,7 +67,7 @@ function run() {
 
     // Is the call currently ringing?
     if (call.type == 'missed' && call.duration == 0) {
-      console.log("calls=",call);
+      console.log(call);
 
       // If we already notified for this call...
       if (lastCallID == call.id) {
@@ -183,7 +183,7 @@ function fillConfig() {
   var app = {
     app_id       : "callerid", 
     app_name     : "Caller ID",
-    app_version  : "0.0.1",
+    app_version  : "0.5.1",
     device_name  : "Server"
   };
 
