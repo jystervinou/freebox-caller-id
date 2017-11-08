@@ -8,7 +8,7 @@ Quand le téléphone fixe de la Freebox (Révolution ou Mini 4K) sonne, ce scrip
 
 Vous pouvez alors décider de vous lever pour aller répondre ou pas.
 
-### Prérequis
+## Prérequis
 
 * Une Freebox Révolution ou une Freebox Mini 4K (le script utilise Freebox OS)
 * Une ligne Free Mobile (pour recevoir les notifications par SMS)
@@ -18,7 +18,7 @@ Vous devez récupérer votre [identifiant et la clé d'identification](http://ww
 
 Vous devez lancer le script 24h/24 sur un serveur qui se trouve sur le réseau local du Freebox Server.
 
-### Installation
+## Installation
 
 ```
 git clone https://github.com/jystervinou/freebox-caller-id.git
