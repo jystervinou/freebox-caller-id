@@ -46,7 +46,7 @@ node caller_id.js
 
 ## Options
 
-1- Vous pouvez renseigner plusieurs numéros Free Mobile destinataires des notifications. Il suffit de rajouter un nouvel élément dans l'Array 'freemobile' dans config/default.json.
+1- Vous pouvez renseigner plusieurs numéros Free Mobile destinataires des notifications. Il suffit de rajouter un nouvel élément dans l'Array 'freemobile' dans config/local.json.
 
 ```
 {
@@ -62,7 +62,7 @@ node caller_id.js
 }
 ```
 
-2- Vous pouvez customiser le template des SMS, en rajoutant un champ 'template':
+2- Vous pouvez customiser le template des SMS, en rajoutant un champ 'template' (utilise [doT et sa syntaxe](http://olado.github.io/doT/index.html)):
 
 ```
 {
