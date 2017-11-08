@@ -1,14 +1,14 @@
 {
   "name": "freebox-caller-id",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Notifications par SMS quand le téléphone fixe de la Freebox (Révolution ou Mini 4K) sonne",
   "main": "caller_id.js",
   "dependencies": {
-    "commander": "^2.11.0",
-    "config": "^1.27.0",
-    "dot": "^1.1.2",
     "node-freeboxos": "github:jystervinou/node-freeboxos",
-    "request": "^2.75.0"
+    "commander": "^2.11.0",
+    "request": "^2.75.0",
+    "config": "^1.27.0",
+    "dot": "^1.1.2"
   },
   "devDependencies": {},
   "repository": {
