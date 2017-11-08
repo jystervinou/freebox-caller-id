@@ -4,7 +4,7 @@ var config = require('config');
 var request = require('request');
 var doT = require('dot');
 
-script.version('0.5.1');
+script.version('0.5.2');
 
 doT.templateSettings.varname = 'call';
 
@@ -183,7 +183,7 @@ function fillConfig() {
   var app = {
     app_id       : "callerid", 
     app_name     : "Caller ID",
-    app_version  : "0.5.1",
+    app_version  : "0.5.2",
     device_name  : "Server"
   };
 
