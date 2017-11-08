@@ -74,6 +74,8 @@ node caller_id.js
 }
 ```
 
+Les champs disponibles sont call.number, call.name, call.type, call.id, call.duration, call.datetime, call.contact_id, call.line_id, call.new ([valeurs fournies par FreeboxOS](https://dev.freebox.fr/sdk/os/call/)).
+
 ## Auteurs
 
 * **Jean-Yves Stervinou** - *Initial work* - [Jean-Yves Stervinou](https://github.com/jystervinou)
