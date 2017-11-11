@@ -8,7 +8,7 @@ script.version('0.5.2');
 
 doT.templateSettings.varname = 'call';
 
-var infos = './freebox.json';
+var infos = require('path').resolve(__dirname, 'freebox.json');
 var smsAPI = 'https://smsapi.free-mobile.fr/sendmsg?';
 
 const DELAY = 1000;
