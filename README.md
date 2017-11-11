@@ -44,6 +44,13 @@ node caller_id.js init
 node caller_id.js
 ```
 
+Note : si vous souhaitez lancer le script à partir d'un autre répertoire que le répertoire racine du projet, vous devez spécifier le chemin du répertoire du config comme ceci :
+
+```
+NODE_CONFIG_DIR=/home/toto/projets/freebox-caller-id/config/ node /home/toto/projets/freebox-caller-id/caller_id.js
+```
+
+
 ## Options
 
 1- Vous pouvez renseigner plusieurs numéros Free Mobile destinataires des notifications. Il suffit de rajouter un nouvel élément dans l'Array 'freemobile' dans config/local.json.
