@@ -1,10 +1,13 @@
 var Freebox = require('node-freeboxos');
 var script = require('commander');
-var config = require('config');
 var request = require('request');
 var doT = require('dot');
 
-script.version('0.5.3');
+// This must be set before the require
+process.env.NODE_CONFIG_DIR= require('path').resolve(__dirname, 'config');
+var config = require('config');
+
+script.version('0.5.4');
 
 doT.templateSettings.varname = 'call';
 
@@ -183,7 +186,7 @@ function fillConfig() {
   var app = {
     app_id       : "callerid", 
     app_name     : "Caller ID",
-    app_version  : "0.5.3",
+    app_version  : "0.5.4",
     device_name  : "Server"
   };
 
