@@ -49,7 +49,7 @@ script.command('calls').description("Return calls").action( ()=> {
 
 script.command('lastcall').description("Return last call").action( ()=> {
   getCalls(function(error, calls) {
-    if (calls.length == 0) return console.log("No call");
+    if (calls == null || calls.length == 0) return console.log("No call");
     console.log(calls[0]);
   });
 });
@@ -63,7 +63,7 @@ function run() {
   getCalls(function(error, calls) {
     if (error) return setTimeout(run, DELAY);
 
-    if (calls.length == 0) return setTimeout(run, DELAY);
+    if (calls == null || calls.length == 0) return setTimeout(run, DELAY);
 
     // Get last call
     var call = calls[0];
