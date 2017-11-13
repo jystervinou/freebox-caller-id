@@ -42,6 +42,7 @@ script.command('init').description("Requests authorization").action( ()=> {
 
 script.command('calls').description("Return calls").action( ()=> {
   getCalls(function(error, calls) {
+    if (error.canRetry) console.log("Try again, this error should disappear");
     if (error) return console.error("error=",error);
     console.log(calls);
   });
@@ -49,6 +50,8 @@ script.command('calls').description("Return calls").action( ()=> {
 
 script.command('lastcall').description("Return last call").action( ()=> {
   getCalls(function(error, calls) {
+    if (error.canRetry) console.log("Try again, this error should disappear");
+    if (error) return console.error("error=",error);
     if (calls == null || calls.length == 0) return console.log("No call");
     console.log(calls[0]);
   });
@@ -61,7 +64,10 @@ if (!script.args.length) run();
 
 function run() {
   getCalls(function(error, calls) {
-    if (error) return setTimeout(run, DELAY);
+    if (error) {
+      if (!error.canRetry) console.error(error);
+      return setTimeout(run, DELAY);
+    }
 
     if (calls == null || calls.length == 0) return setTimeout(run, DELAY);
 
@@ -173,8 +179,6 @@ function getCalls(callback) {
 
   freebox.calls((error, calls) => {
     if (error) {
-      console.error(error);
-      if (error.canRetry) console.log("Session will be renewed automatically");
       return callback(error,null);
     }
 
