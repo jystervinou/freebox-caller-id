@@ -174,6 +174,7 @@ function getCalls(callback) {
   freebox.calls((error, calls) => {
     if (error) {
       console.error(error);
+      if (error.canRetry) console.log("Session will be renewed automatically");
       return callback(error,null);
     }
 
@@ -190,7 +191,7 @@ function fillConfig() {
     device_name  : "Server"
   };
 
-  var freeboxConf = {app};
+  var freeboxConf = {'app': app};
 
   return freeboxConf;
 }
