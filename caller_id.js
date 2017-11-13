@@ -7,7 +7,7 @@ var doT = require('dot');
 process.env.NODE_CONFIG_DIR= require('path').resolve(__dirname, 'config');
 var config = require('config');
 
-script.version('0.5.5');
+script.version('0.5.6');
 
 doT.templateSettings.varname = 'call';
 
@@ -191,7 +191,7 @@ function fillConfig() {
   var app = {
     app_id       : "callerid", 
     app_name     : "Caller ID",
-    app_version  : "0.5.5",
+    app_version  : "0.5.6",
     device_name  : "Server"
   };
 
