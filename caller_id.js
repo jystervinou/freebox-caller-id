@@ -7,6 +7,8 @@ var airtunes = require('airtunes');
 var spawn = require('child_process').spawn;
 var winston = require('winston');
 
+script.version('0.6.4');
+
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.simple(),
@@ -34,8 +36,6 @@ if (process.env.NODE_ENV !== 'production') {
 process.env.NODE_CONFIG_DIR= require('path').resolve(__dirname, 'config');
 var config = require('config');
 
-script.version('0.6.3');
-
 doT.templateSettings.varname = 'call';
 
 var infos = require('path').resolve(__dirname, 'freebox.json');
@@ -43,11 +43,13 @@ var smsAPI = 'https://smsapi.free-mobile.fr/sendmsg?';
 
 const DELAY = 1000;
 const DEFAULT_TEMPLATE = "Appel Freebox : {{? call.number==''}}Anonyme{{??}}{{=call.number}} ({{=call.name}}){{?}}";
-const SOUND_FILE_PATH = './voice.wav';
+const VOICE_PATH = './voice.wav';
+const VOICES_PATH = './voices.wav';
 const FREEBOX_SERVER = 'mafreebox.freebox.fr';
 const FREEBOX_VOLUME = 100;
 const FFMPEG = '/usr/bin/ffmpeg';
 const PICO2WAVE = '/usr/bin/pico2wave';
+const SOX = '/usr/bin/sox';
 
 var lastCallID = 0;
 
@@ -142,7 +144,10 @@ function sendNotifications(call, callback) {
     var voice2Freebox = config.get('voice2freebox');
     var pico2waveBin = voice2Freebox.hasOwnProperty('pico2wave') ? voice2Freebox['pico2wave'] : PICO2WAVE;
     var ffmpegBin = voice2Freebox.hasOwnProperty('ffmpeg') ? voice2Freebox['ffmpeg'] : FFMPEG;
-    sendVoice2Freebox(call, pico2waveBin, ffmpegBin, done);
+    var soxBin = voice2Freebox.hasOwnProperty('sox') ? voice2Freebox['sox'] : SOX;
+    var repeats = voice2Freebox.hasOwnProperty('repeats') ? voice2Freebox['repeats'] : 1;
+
+    sendVoice2Freebox(call, soxBin, pico2waveBin, ffmpegBin, repeats, done);
     remaining++;
   }
   if (config.has('freemobile')) {
@@ -163,10 +168,10 @@ function sendNotifications(call, callback) {
   }
 }
 
-function sendVoice2Freebox(call, pico2waveBin, ffmpegBin, callback) {
-  genSound(call.name, SOUND_FILE_PATH, pico2waveBin, function() {
+function sendVoice2Freebox(call, soxBin, pico2waveBin, ffmpegBin, repeats, callback) {
+  genSound(call.name, VOICES_PATH, soxBin, pico2waveBin, repeats, function() {
     logger.info('Sending voice...');
-    sendSound(SOUND_FILE_PATH, ffmpegBin);
+    sendSound(VOICES_PATH, ffmpegBin);
     return callback();
   });
 }
@@ -255,16 +260,38 @@ function getCalls(callback) {
   });
 }
 
-function genSound(words, path, pico2waveBin, callback) {
-  var pico2wave = spawn(pico2waveBin, [
-    '-w', path,
-    '-l', 'fr-FR',
-    words
+function genSound(words, outputPath, soxBin, pico2waveBin, repeats, callback) {
+  pico2wave(words, 'fr_FR', VOICE_PATH, function() {
+    sox(VOICE_PATH, outputPath, repeats || 1, function() {
+      callback();
+    });
+  });
+
+  function pico2wave(text, lang, path, cb) {
+    var pico2wave = spawn(pico2waveBin, [
+      '-w', path,
+      '-l', lang,
+      text
     ]);
 
-  pico2wave.on('close', (code) => {
-    callback();
-  });
+    pico2wave.on('close', (code) => {
+      cb();
+    });
+  }
+
+  function sox(input, output, repeats, cb) {
+    var parameters = [];
+    for(var i=0; i < repeats; i++) {
+      parameters.push(input);
+    }
+    parameters.push(output);
+
+    var sox = spawn(soxBin, parameters);
+
+    sox.on('close', (code) => {
+      cb();
+    });
+  }
 }
 
 function sendSound(path, ffmpegBin) {
@@ -320,7 +347,7 @@ function fillConfig() {
   var app = {
     app_id       : "callerid", 
     app_name     : "Caller ID",
-    app_version  : "0.6.3",
+    app_version  : "0.6.4",
     device_name  : "Server"
   };
 
