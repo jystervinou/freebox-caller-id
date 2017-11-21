@@ -36,7 +36,7 @@ process.env.NODE_CONFIG_DIR= require('path').resolve(__dirname, 'config');
 var config = require('config');
 
 
-script.version('0.6.0');
+script.version('0.6.1');
 
 doT.templateSettings.varname = 'call';
 
@@ -57,26 +57,26 @@ script.command('init').description("Requests authorization").action( ()=> {
   var freebox=new Freebox(freeboxConf);
 
   freebox.waitApplicationGranted(1000*60*2, (error, app) => {
-    logger.error("error=",error,"app=",app);
-
     if (error) {
-      logger.error(JSON.stringify(error));
-      return;
+      console.error(JSON.stringify(error));
+      process.exit(0);
     }
 
     freebox.saveJSON(infos, (error) => {
       if (error) {
-        logger.error(JSON.stringify(error));
-        return;
+        console.error(JSON.stringify(error));
+        process.exit(0);
       }
+      console.log('freebox.json saved with success');
+      process.exit(0);
     });
   });
 });
 
 script.command('calls').description("Return calls").action( ()=> {
   getCalls(function(error, calls) {
-    if (error && error.canRetry) logger.error("Try again, this error should disappear");
-    if (error) return logger.error("error=",error);
+    if (error && error.canRetry) console.error("Try again, this error should disappear");
+    if (error) return console.error("error=",error);
     console.log(calls);
     process.exit(0);
   });
@@ -84,9 +84,9 @@ script.command('calls').description("Return calls").action( ()=> {
 
 script.command('lastcall').description("Return last call").action( ()=> {
   getCalls(function(error, calls) {
-    if (error && error.canRetry) logger.error("Try again, this error should disappear");
-    if (error) return logger.error("error=",error);
-    if (calls == null || calls.length == 0) return logger.info("No call");
+    if (error && error.canRetry) console.error("Try again, this error should disappear");
+    if (error) return console.error("error=",error);
+    if (calls == null || calls.length == 0) return console.log("No call");
     console.log(calls[0]);
     process.exit(0);
   });
@@ -330,7 +330,7 @@ function fillConfig() {
   var app = {
     app_id       : "callerid", 
     app_name     : "Caller ID",
-    app_version  : "0.6.0",
+    app_version  : "0.6.1",
     device_name  : "Server"
   };
 
