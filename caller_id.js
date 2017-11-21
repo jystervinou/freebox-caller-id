@@ -34,7 +34,7 @@ if (process.env.NODE_ENV !== 'production') {
 process.env.NODE_CONFIG_DIR= require('path').resolve(__dirname, 'config');
 var config = require('config');
 
-script.version('0.6.2');
+script.version('0.6.3');
 
 doT.templateSettings.varname = 'call';
 
@@ -140,6 +140,7 @@ function sendNotifications(call, callback) {
 
   if (config.has('voice2freebox')) {
     var voice2Freebox = config.get('voice2freebox');
+    var pico2waveBin = voice2Freebox.hasOwnProperty('pico2wave') ? voice2Freebox['pico2wave'] : PICO2WAVE;
     var ffmpegBin = voice2Freebox.hasOwnProperty('ffmpeg') ? voice2Freebox['ffmpeg'] : FFMPEG;
     sendVoice2Freebox(call, pico2waveBin, ffmpegBin, done);
     remaining++;
@@ -319,7 +320,7 @@ function fillConfig() {
   var app = {
     app_id       : "callerid", 
     app_name     : "Caller ID",
-    app_version  : "0.6.2",
+    app_version  : "0.6.3",
     device_name  : "Server"
   };
 
