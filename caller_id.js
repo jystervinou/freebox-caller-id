@@ -3,7 +3,6 @@ var script = require('commander');
 var request = require('request');
 var doT = require('dot');
 var fs = require('fs');
-var tts = require('./voice-rss-tts.js');
 var airtunes = require('airtunes');
 var spawn = require('child_process').spawn;
 var winston = require('winston');
@@ -45,10 +44,11 @@ var smsAPI = 'https://smsapi.free-mobile.fr/sendmsg?';
 
 const DELAY = 1000;
 const DEFAULT_TEMPLATE = "Appel Freebox : {{? call.number==''}}Anonyme{{??}}{{=call.number}} ({{=call.name}}){{?}}";
-const SOUND_FILE_PATH = './voice.mp3';
+const SOUND_FILE_PATH = './voice.wav';
 const FREEBOX_SERVER = 'mafreebox.freebox.fr';
 const FREEBOX_VOLUME = 100;
 const FFMPEG = '/usr/bin/ffmpeg';
+const PICO2WAVE = '/usr/bin/pico2wave';
 
 var lastCallID = 0;
 
@@ -141,11 +141,9 @@ function sendNotifications(call, callback) {
 
   if (config.has('voice2freebox')) {
     var voice2Freebox = config.get('voice2freebox');
-    if (voice2Freebox.hasOwnProperty('key')) {
-      var ffmpegBin = voice2Freebox.hasOwnProperty('ffmpeg') ? voice2Freebox['ffmpeg'] : FFMPEG;
-      sendVoice2Freebox(call, voice2Freebox['key'], ffmpegBin, done);
-      remaining++;
-    }
+    var ffmpegBin = voice2Freebox.hasOwnProperty('ffmpeg') ? voice2Freebox['ffmpeg'] : FFMPEG;
+    sendVoice2Freebox(call, pico2waveBin, ffmpegBin, done);
+    remaining++;
   }
   if (config.has('freemobile')) {
     sendAllSMS(call, done);
@@ -165,17 +163,11 @@ function sendNotifications(call, callback) {
   }
 }
 
-function sendVoice2Freebox(call, key, ffmpegBin, callback) {
-  genSound(call.name, key, function(error, content) {
-    // logger.info("Sound: " + content);
-    fs.writeFile(SOUND_FILE_PATH, content, function(err) {
-      if (err) {
-        logger.error("Error with mp3 file");
-        return callback(err);
-      }
-      sendSound(SOUND_FILE_PATH, ffmpegBin);
-      return callback();
-    });
+function sendVoice2Freebox(call, pico2waveBin, ffmpegBin, callback) {
+  genSound(call.name, SOUND_FILE_PATH, pico2waveBin, function() {
+    logger.info('Sending voice...');
+    sendSound(SOUND_FILE_PATH, ffmpegBin);
+    return callback();
   });
 }
 
@@ -263,18 +255,16 @@ function getCalls(callback) {
   });
 }
 
-function genSound(words, key, callback) {
-  tts.speech({
-          key: key,
-          hl: 'fr-fr',
-          src: words,
-          r: 0,
-          c: 'mp3',
-          f: '44khz_16bit_stereo',
-          ssml: false,
-          b64: false,
-          callback: callback
-      });
+function genSound(words, path, pico2waveBin, callback) {
+  var pico2wave = spawn(pico2waveBin, [
+    '-w', path,
+    '-l', 'fr-FR',
+    words
+    ]);
+
+  pico2wave.on('close', (code) => {
+    callback();
+  });
 }
 
 function sendSound(path, ffmpegBin) {
