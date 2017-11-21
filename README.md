@@ -4,21 +4,70 @@ Vous en avez assez d'aller voir qui appelle sur votre téléphone Freebox *fixe*
 
 Ce script est fait pour vous !
 
-Quand le téléphone fixe de la Freebox (Révolution ou Mini 4K) sonne, ce script envoie une notification par SMS sur votre mobile (Free Mobile) avec le numéro de l'appelant.
+Quand le téléphone fixe de la Freebox (Révolution ou Mini 4K) sonne, ce script envoie une notification, au choix :
+
+* par SMS sur votre mobile (Free Mobile) avec le numéro ou le nom de l'appelant.
+* par la voix, via le haut-parleur du Freebox Server. Vous vous demandiez à quoi il servait ? Et ben voilà :-)
 
 Vous pouvez alors décider de vous lever pour aller répondre ou pas.
 
 ## Prérequis
 
 * Une Freebox Révolution ou une Freebox Mini 4K (le script utilise Freebox OS)
-* Une ligne Free Mobile (pour recevoir les notifications par SMS)
 * Un serveur avec Node.js sur le réseau local de la Freebox (par exemple un Raspberry Pi)
+* Une ligne Free Mobile (pour recevoir les notifications par SMS)
 
 Vous devez récupérer votre [identifiant et la clé d'identification](http://www.universfreebox.com/article/26337/Nouveau-Free-Mobile-lance-un-systeme-de-notification-SMS-pour-vos-appareils-connectes) de l'API de notification SMS sur votre compte Free Mobile.
 
 Vous devez lancer le script 24h/24 sur un serveur qui se trouve sur le réseau local du Freebox Server.
+Le script a été testé avec un Raspberry Pi 3.
 
 ## Installation
+
+
+### FFmpeg
+
+FFmpeg sert à jouer le fichier son vers le haut-parleur du Freebox Server. (via AirTunes)
+
+Pour le Pi3 (et le 2 ??) :
+
+```
+wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-armhf-32bit-static.tar.xz
+tar -xJf ffmpeg-release-armhf-32bit-static.tar.xz
+sudo cp ffmpeg-3.4-armhf-32bit-static/ff* /usr/local/bin/
+```
+
+Le chemin de ffmpeg est /usr/local/bin/ffmpeg
+
+Pour le Pi :
+
+```
+wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-armel-32bit-static.tar.xz
+tar -xJf ffmpeg-release-armhf-32bit-static.tar.xz
+sudo cp ffmpeg-3.4-armhf-32bit-static/ff* /usr/local/bin/
+```
+
+Le chemin de ffmpeg est /usr/local/bin/ffmpeg
+
+### Svoxpico
+
+Svoxpico est un utilitaire "couteau suisse" pour tout ce qui est manipulation de fichiers sons.
+
+```
+sudo apt-get install libttspico-utils
+```
+
+### Sox
+
+Sox est un utilitaire "couteau suisse" pour tout ce qui est manipulation de fichiers sons.
+
+```
+sudo apt-get install sox
+```
+
+### Freebox Caller ID
+
+Le script principal qui orquestre le tout.
 
 ```
 git clone https://github.com/jystervinou/freebox-caller-id.git
@@ -27,6 +76,9 @@ cd freebox-caller-id
 
 npm install
 ```
+
+Pour mettre à jour Freebox Caller ID, vous pouvez faire un `git pull` dans le répertoire freebox-caller-id.
+
 
 ## Fonctionnement
 
@@ -75,6 +127,28 @@ node caller_id.js
 ```
 
 Les champs disponibles sont call.number, call.name, call.type, call.id, call.duration, call.datetime, call.contact_id, call.line_id, call.new ([valeurs fournies par FreeboxOS](https://dev.freebox.fr/sdk/os/call/)).
+
+3- Pour envoyer le nom de l'appelant sur le haut-parleur du Freebox Server, il faut ajouter un champ voice2freebox dans le fichier de conf :
+
+```
+{
+  "freemobile" : [{
+      "login" : "12345678",
+      "pass" : "xxxxxxxxxxxxxx"
+    }
+  ],
+  "voice2freebox" : {
+    "pico2wave" : "/usr/bin/pico2wave",
+    "sox" : "/usr/bin/sox",
+    "ffmpeg" : "/usr/local/bin/ffmpeg",
+    "repeat" : 1
+  }
+}
+```
+
+Vous ne devez mettre les champs pico2wave, sox et ffmpeg seulement si vous souhaitez modifier les valeurs par défaut (qui sont celles juste au dessus).
+
+`repeat` est le nombre de fois que le nom sera répété via le haut-parleur. (L'integer 2, pas le string "2")
 
 ## Auteurs
 
