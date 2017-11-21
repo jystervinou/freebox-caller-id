@@ -7,7 +7,7 @@ var airtunes = require('airtunes');
 var spawn = require('child_process').spawn;
 var winston = require('winston');
 
-script.version('0.7.1');
+script.version('0.7.2');
 
 const logger = winston.createLogger({
   level: 'info',
@@ -218,7 +218,7 @@ function sendAllSMS(call, callback) {
       new: call.new
     };
 
-    request({uri: smsAPI + 'user=' + mobile['login'] + '&pass=' + mobile['pass'] + '&msg=' + templateFn(data)}, function(error, response, body) {
+    request({uri: smsAPI + 'user=' + mobile['login'] + '&pass=' + mobile['pass'] + '&msg=' + encodeURIComponent(templateFn(data))}, function(error, response, body) {
       if (error) {
         callback(error);
       }
@@ -347,7 +347,7 @@ function fillConfig() {
   var app = {
     app_id       : "callerid", 
     app_name     : "Caller ID",
-    app_version  : "0.7.1",
+    app_version  : "0.7.2",
     device_name  : "Server"
   };
 
