@@ -145,9 +145,9 @@ function sendNotifications(call, callback) {
     var pico2waveBin = voice2Freebox.hasOwnProperty('pico2wave') ? voice2Freebox['pico2wave'] : PICO2WAVE;
     var ffmpegBin = voice2Freebox.hasOwnProperty('ffmpeg') ? voice2Freebox['ffmpeg'] : FFMPEG;
     var soxBin = voice2Freebox.hasOwnProperty('sox') ? voice2Freebox['sox'] : SOX;
-    var repeats = voice2Freebox.hasOwnProperty('repeats') ? voice2Freebox['repeats'] : 1;
+    var repeat = voice2Freebox.hasOwnProperty('repeat') ? voice2Freebox['repeat'] : 1;
 
-    sendVoice2Freebox(call, soxBin, pico2waveBin, ffmpegBin, repeats, done);
+    sendVoice2Freebox(call, soxBin, pico2waveBin, ffmpegBin, repeat, done);
     remaining++;
   }
   if (config.has('freemobile')) {
@@ -168,8 +168,8 @@ function sendNotifications(call, callback) {
   }
 }
 
-function sendVoice2Freebox(call, soxBin, pico2waveBin, ffmpegBin, repeats, callback) {
-  genSound(call.name, VOICES_PATH, soxBin, pico2waveBin, repeats, function() {
+function sendVoice2Freebox(call, soxBin, pico2waveBin, ffmpegBin, repeat, callback) {
+  genSound(call.name, VOICES_PATH, soxBin, pico2waveBin, repeat, function() {
     logger.info('Sending voice...');
     sendSound(VOICES_PATH, ffmpegBin);
     return callback();
@@ -260,9 +260,9 @@ function getCalls(callback) {
   });
 }
 
-function genSound(words, outputPath, soxBin, pico2waveBin, repeats, callback) {
+function genSound(words, outputPath, soxBin, pico2waveBin, repeat, callback) {
   pico2wave(words, 'fr_FR', VOICE_PATH, function() {
-    sox(VOICE_PATH, outputPath, repeats || 1, function() {
+    sox(VOICE_PATH, outputPath, repeat || 1, function() {
       callback();
     });
   });
@@ -279,9 +279,9 @@ function genSound(words, outputPath, soxBin, pico2waveBin, repeats, callback) {
     });
   }
 
-  function sox(input, output, repeats, cb) {
+  function sox(input, output, repeat, cb) {
     var parameters = [];
-    for(var i=0; i < repeats; i++) {
+    for(var i=0; i < repeat; i++) {
       parameters.push(input);
     }
     parameters.push(output);
