@@ -96,6 +96,15 @@ node caller_id.js init
 node caller_id.js
 ```
 
+## Carnet d'adresse de la Freebox
+
+Freebox Caller ID utilise le carnet d'adresse de la Freebox pour trouver le nom de l'appelant.
+
+La Freebox Révolution et la Freebox Mini 4k possèdent [un carnet d'adresse intégré pour gérer vos contacts](http://www.universfreebox.com/article/21614/Freebox-OS-journal-d-appels-gerez-vos-contacts-et-affichez-les-sur-la-Freebox).
+
+Le plus simple est d'importer en masse vos contacts dans le carnet d'adresses.
+Par exemple, vous pouvez exporter vos contacts à partir de Google Contacts. (Format vcard/vcf)
+
 ## Options
 
 1- Vous pouvez renseigner plusieurs numéros Free Mobile destinataires des notifications. Il suffit de rajouter un nouvel élément dans l'Array 'freemobile' dans config/local.json.
