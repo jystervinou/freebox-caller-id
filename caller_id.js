@@ -7,7 +7,7 @@ var airtunes = require('airtunes');
 var spawn = require('child_process').spawn;
 var winston = require('winston');
 
-script.version('0.7.0');
+script.version('0.7.1');
 
 const logger = winston.createLogger({
   level: 'info',
@@ -261,7 +261,7 @@ function getCalls(callback) {
 }
 
 function genSound(words, outputPath, soxBin, pico2waveBin, repeat, callback) {
-  pico2wave(words, 'fr_FR', VOICE_PATH, function() {
+  pico2wave(words, 'fr-FR', VOICE_PATH, function() {
     sox(VOICE_PATH, outputPath, repeat || 1, function() {
       callback();
     });
@@ -347,7 +347,7 @@ function fillConfig() {
   var app = {
     app_id       : "callerid", 
     app_name     : "Caller ID",
-    app_version  : "0.7.0",
+    app_version  : "0.7.1",
     device_name  : "Server"
   };
 
