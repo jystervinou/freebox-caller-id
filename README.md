@@ -51,7 +51,7 @@ Le chemin de ffmpeg est /usr/local/bin/ffmpeg
 
 ### Svoxpico
 
-Svoxpico est un utilitaire "couteau suisse" pour tout ce qui est manipulation de fichiers sons.
+Svoxpico est un des meilleurs utilitaires de synthèse de voix sous linux.
 
 ```
 sudo apt-get install libttspico-utils
