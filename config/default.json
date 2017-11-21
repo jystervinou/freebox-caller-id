@@ -5,6 +5,8 @@
   }],
   "voice2freebox" : {
     "pico2wave" : "/usr/bin/pico2wave",
-    "ffmpeg" : "/usr/local/bin/ffmpeg"
+    "sox" : "/usr/bin/sox",
+    "ffmpeg" : "/usr/local/bin/ffmpeg",
+    "repeat" : 1
   }
 }
