@@ -4,8 +4,7 @@
     "pass" : "xxxxxxxxxxxxxx"
   }],
   "voice2freebox" : {
-    "ffmpeg" : "/usr/local/bin/ffmpeg",
-    "key" : "11111111111111111111111111111111"
+    "pico2wave" : "/usr/bin/pico2wave",
+    "ffmpeg" : "/usr/local/bin/ffmpeg"
   }
-
 }

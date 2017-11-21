@@ -34,8 +34,7 @@ if (process.env.NODE_ENV !== 'production') {
 process.env.NODE_CONFIG_DIR= require('path').resolve(__dirname, 'config');
 var config = require('config');
 
-
-script.version('0.6.1');
+script.version('0.6.2');
 
 doT.templateSettings.varname = 'call';
 
@@ -320,7 +319,7 @@ function fillConfig() {
   var app = {
     app_id       : "callerid", 
     app_name     : "Caller ID",
-    app_version  : "0.6.1",
+    app_version  : "0.6.2",
     device_name  : "Server"
   };
 
