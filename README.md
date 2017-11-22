@@ -150,7 +150,10 @@ Les champs disponibles sont call.number, call.name, call.type, call.id, call.dur
     "pico2wave" : "/usr/bin/pico2wave",
     "sox" : "/usr/bin/sox",
     "ffmpeg" : "/usr/local/bin/ffmpeg",
-    "repeat" : 1
+    "before" : "./starwars.wav",
+    "middle" : "./r2d2.wav",
+    "after" : "./theend.wav",
+    "repeat" : 3
   }
 }
 ```
@@ -158,6 +161,12 @@ Les champs disponibles sont call.number, call.name, call.type, call.id, call.dur
 Vous ne devez mettre les champs pico2wave, sox et ffmpeg seulement si vous souhaitez modifier les valeurs par défaut (qui sont celles juste au dessus).
 
 `repeat` est le nombre de fois que le nom sera répété via le haut-parleur. (L'integer 2, pas le string "2")
+`before` est le chemin vers un fichier wav qui sera joué avant toutes les annonces du nom.
+`middle` est le chemin vers un fichier wav qui sera joué entre les annonces du nom.
+`after` est le chemin vers un fichier wav qui sera joué après les annonces du nom.
+
+Note : les fichiers wav doivent avoir un bitrate de 160000, vous pouvez utiliser `soxi test.wav` pour le vérifier. (soxi est installé en même temps que sox)
+Pour modifier le bitrate d'un fichier wav : `sox entree.wav -r 16000 sortie.wav`
 
 ## Auteurs
 
