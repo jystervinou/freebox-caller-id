@@ -7,7 +7,7 @@ var airtunes = require('airtunes');
 var spawn = require('child_process').spawn;
 var winston = require('winston');
 
-script.version('0.7.6');
+script.version('0.7.7');
 
 const logger = winston.createLogger({
   level: 'info',
@@ -366,7 +366,7 @@ function fillConfig() {
   var app = {
     app_id       : "callerid", 
     app_name     : "Caller ID",
-    app_version  : "0.7.6",
+    app_version  : "0.7.7",
     device_name  : "Server"
   };
 
