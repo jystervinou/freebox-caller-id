@@ -165,8 +165,9 @@ Vous ne devez mettre les champs pico2wave, sox et ffmpeg seulement si vous souha
 - `middle` est le chemin vers un fichier wav qui sera joué entre les annonces du nom.
 - `after` est le chemin vers un fichier wav qui sera joué après les annonces du nom.
 
-Note : les fichiers wav doivent avoir un bitrate de 160000, vous pouvez utiliser `soxi test.wav` pour le vérifier. (soxi est installé en même temps que sox)
-Pour modifier le bitrate d'un fichier wav : `sox entree.wav -r 16000 sortie.wav`
+Note : les fichiers wav doivent avoir un Sample Rate de 16000, vous pouvez utiliser `soxi test.wav` pour le vérifier. (soxi est installé en même temps que sox)
+
+Pour modifier le Sample Rate d'un fichier wav : `sox entree.wav -r 16000 sortie.wav`
 
 ## Auteurs
 
