@@ -7,7 +7,7 @@ var airtunes = require('airtunes');
 var spawn = require('child_process').spawn;
 var winston = require('winston');
 
-script.version('0.7.7');
+script.version('0.8.0');
 
 const logger = winston.createLogger({
   level: 'info',
@@ -140,12 +140,18 @@ function sendNotifications(call, callback) {
 
   var remaining=0;
 
-  if (config.has('voice2freebox')) {
-    sendVoice2Freebox(call, config.get('voice2freebox'), done);
+  if (config.has('httpget')) {
+    sendAllHTTPGet(call, config.get('httpget'), done);
     remaining++;
   }
+
   if (config.has('freemobile')) {
     sendAllSMS(call, done);
+    remaining++;
+  }
+
+  if (config.has('voice2freebox')) {
+    sendVoice2Freebox(call, config.get('voice2freebox'), done);
     remaining++;
   }
 
@@ -158,6 +164,91 @@ function sendNotifications(call, callback) {
       // We're done sending all notifications
       logger.info('All notifications sent');
       return callback();
+    }
+  }
+}
+
+
+function sendAllHTTPGet(call, confs, callback) {
+  var remaining = 0;
+  var errors = null;
+
+  if (confs) {
+    var conf;
+    remaining = confs.length;
+    logger.info('Sending ' + remaining + ' http get...');
+    for (var i=0; i< confs.length; i++) {
+      conf = confs[i];
+      sendHTTPGet(call, conf, done);
+    }
+  } else {
+    return callback();
+  }
+
+  function sendHTTPGet(call, conf, callback) {
+    var template = '';
+
+    if (!conf.hasOwnProperty('url')) {
+      return callback(new Error('Parameter url required'));
+    }
+
+    if (conf.hasOwnProperty('template')) {
+      template = conf['template'];
+    } else {
+      template = DEFAULT_TEMPLATE;
+    }
+
+    var data = {
+      number: call.number,
+      type: call.type,
+      id: call.id,
+      duration: call.duration,
+      datetime: call.datetime,
+      contact_id: call.contact_id,
+      line_id: call.line_id,
+      name: call.name,
+      new: call.new
+    };
+
+    var templateFn = doT.template(template);
+    var url = conf['url'] + encodeURIComponent(templateFn(data));
+
+    if (conf.hasOwnProperty('username') && conf.hasOwnProperty('password')) {
+      request.get(url, {
+          'auth': {
+            'user': conf['username'],
+            'pass': conf['password']
+          }
+        }, function (error, response, body) {
+            if (error) {
+              callback(error);
+            }
+
+            callback(null);
+        });
+    } else {
+      request.get(url, function(error, response, body) {
+        if (error) {
+          callback(error);
+        }
+
+        callback(null);
+      });
+    }
+  }
+
+  function done(error) {
+    if (error) {
+      errors += error;
+      logger.error('Error: ' + error);
+    } else {
+      logger.info('http get sent');
+    }
+    remaining--;
+    if (remaining == 0) {
+      // We're done sending all http get
+      logger.info('All http get sent');
+      return callback(errors);
     }
   }
 }
@@ -287,7 +378,7 @@ function genSound(words, conf, callback) {
   }
 
   function sox(input, output, repeat, before, middle, after, cb) {
-    var parameters = ['-v', '1.5'];
+    var parameters = ['-v', '1.2'];
 
     if (before != null) parameters.push(before);
 
@@ -366,7 +457,7 @@ function fillConfig() {
   var app = {
     app_id       : "callerid", 
     app_name     : "Caller ID",
-    app_version  : "0.7.7",
+    app_version  : "0.8.0",
     device_name  : "Server"
   };
 
